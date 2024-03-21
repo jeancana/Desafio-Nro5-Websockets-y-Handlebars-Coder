@@ -1,0 +1,103 @@
+{{!-- ESTA PLANTILLA DE HANDLEBARS NOS VA A SERVIR DE CLIENTE PARA HACER FUNCIONAR EL SOCKET.IO (WEBSOCKET) --}}
+{{!-- Aca estamos Usando el protocolo websocket del lado del Cliente --}}
+<div>
+
+    <br>
+    <h2> Carga de Productos Via Websocket</h2>
+    
+
+    {{!-- action="http://localhost:8080/api/products" method="post" enctype="multipart/form-data --}}
+
+    <form id="miFormulario" name="miFormulario" >
+
+        <input type="text" id="title" name="title" placeholder="NombreProducto"><br>
+        <input type="text" id="description" name="description" placeholder="Descripcion"><br>
+        <input type="text" id="code" name="code" placeholder="Codigo"><br>
+        <input type="text" id="status" name="status" placeholder="Status: true or false"><br>        
+        <input type="number" id="stock" name="stock" placeholder="Cantidad"><br>
+        <input type="text" id="category" name="category" placeholder="Categoria"><br>
+        <button type="submit" >Cargar</button>
+        <hr>
+        <h2> Mostrando Productos Con WEBSOCKET</h2>
+        <div id="all-Messages"></div>
+
+    </form>
+
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+{{!-- Escribimos TODO El codigo Directamente en el scritp que nos proporciona el Motor de plantillas Handlebars --}}
+<script>
+
+    // WEBSOCKET DEL LADO DEL CLIENTE 
+    // Creando una Instancia de socket.io para el CLIENTE 
+    const socket = io()
+
+    // Capturando el formulario
+    const formulario = document.querySelector('#miFormulario');
+    
+    // Capturando lo datos contenidos dentro del formulario 
+    const title = document.querySelector('#title')
+    const description = document.querySelector('#description')
+    const email = document.querySelector('#code')
+    const status = document.querySelector('#status')
+    const stock = document.querySelector('#stock')
+    const category = document.querySelector('#category')
+
+    const allMessages = document.querySelector('#all-Messages')
+    
+    
+    // Agregar evento de escucha para el envío del formulario
+    formulario.addEventListener('submit', evtSubmit => {
+        
+        // Deteniendo el Evento por defecto submit
+        evtSubmit.preventDefault()
+        
+        // Verificando los Datos Obtenidos del Formulario - en Navegador
+        /*
+        console.log(
+
+            title.value,
+            description.value,
+            email.value,
+            status.value,
+            stock.value,
+            category.value
+
+        ) 
+        */
+
+        // Enviando al back los datos a traves del evento socket.emit 
+        socket.emit('client:product', {
+            
+            //enviado los datos en forma de objeto al servidor
+            title: title.value,
+            description: description.value,
+            email: email.value,
+            status: status.value,
+            stock: stock.value,
+            category: category.value
+
+        })
+
+        // Reciendo los producto del Servidor via webasocket
+        socket.on('server:allproducts', data => {
+
+            let showProducts = "";
+
+            for (let item of data) {
+                showProducts +=`<li>Producto: ${item.title}</li><li>Descripcion:${item.description}</li><li>email: ${item.email}</li><li>status: ${item.status}</li><li>Stock: ${item.stock}</li><li>Categoria: ${item.category}</li><br>`
+            }
+
+            // Mostrando todos los productos en tiempo real 
+            allMessages.innerHTML = showProducts;
+
+            
+        })
+
+    })
+
+
+</script>

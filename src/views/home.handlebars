@@ -1,0 +1,28 @@
+
+
+
+<div>
+    <h1> ** MI TIENDA DE MUSICA ** </h1>
+
+    <br>
+    <h3> Desafio Nro 5<br> MOSTRANDO LISTADO DE PRODUCTOS CARGADOS </h3>
+
+    {{!-- Hacemos una lista de html con el <ul></ul>--}}
+    <ul>
+        {{!-- recorremos el array de productos con un el forEach q nos provee handlebars --}}
+        {{#each readProducts}}
+
+        {{!-- Usamos la palabra reserva this. para acceder al valor que queremos mostras del array de Alimentos --}}
+        {{!-- usamos un <li></li> list item para listar los items --}}
+        <li>Item Nro: {{this.id}} </li>
+        <li>Nombre del Producto: {{this.title}} </li>
+        <li>Descripcion: {{this.description}}</li>
+        <li>Codigo: {{this.code}}</li>
+        <li>Stock: {{this.stock}}</li>
+        <li>Categoria: {{this.category}}</li>
+        <br>
+        {{/each}}
+    </ul>
+   
+
+</div>
